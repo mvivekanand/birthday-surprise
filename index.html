@@ -1,53 +1,405 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Birthday Puzzle</title>
-<style>
-body{
-font-family: Arial;
-text-align:center;
-background:black;
-color:white;
-margin-top:100px;
-}
-input{
-padding:10px;
-font-size:18px;
-}
-button{
-padding:10px 20px;
-font-size:18px;
-}
-</style>
-</head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Antisha 🎁</title>
+    <style>
+        :root {
+            --primary: #ff477e;
+            --secondary: #ff85a1;
+            --accent: #fbb1bd;
+            --bg: #0a0a0c;
+            --glass: rgba(255, 255, 255, 0.1);
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: white;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Login Screen Styles */
+        #login-screen {
+            text-align: center;
+            z-index: 10;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            background: var(--glass);
+            padding: 3rem;
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            outline: none;
+            transition: border-color 0.3s;
+            text-align: center;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px var(--primary);
+        }
+
+        #error-msg {
+            color: #ff4b2b;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            min-height: 1.2rem;
+        }
+
+        /* Celebration Screen */
+        #celebration-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #1a0b2e 0%, #0a0a0c 100%);
+        }
+
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        .birthday-content {
+            z-index: 5;
+            text-align: center;
+            animation: fadeInScale 1.2s ease-out forwards;
+        }
+
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .main-title {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px rgba(255, 71, 126, 0.5);
+        }
+
+        .name-highlight {
+            color: var(--primary);
+            display: block;
+            font-size: 5rem;
+            letter-spacing: -2px;
+        }
+
+        /* The Gift Box */
+        .gift-container {
+            margin-top: 3rem;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .gift-box {
+            width: 120px;
+            height: 120px;
+            background: var(--primary);
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+            margin: 0 auto;
+        }
+
+        .gift-box::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 100%;
+            background: gold;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .gift-box::after {
+            content: '';
+            position: absolute;
+            height: 20px;
+            width: 100%;
+            background: gold;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .gift-lid {
+            width: 130px;
+            height: 30px;
+            background: var(--secondary);
+            position: absolute;
+            top: -20px;
+            left: -5px;
+            border-radius: 4px;
+            z-index: 2;
+            transition: transform 0.5s, opacity 0.5s;
+        }
+
+        .gift-container:hover .gift-box {
+            transform: rotateY(15deg) rotateX(10deg);
+        }
+
+        .gift-container.open .gift-lid {
+            transform: translateY(-100px) rotate(-20deg);
+            opacity: 0;
+        }
+
+        .secret-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 280px;
+            background: white;
+            color: #333;
+            padding: 20px;
+            border-radius: 15px;
+            opacity: 0;
+            transition: all 0.5s 0.3s;
+            pointer-events: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .gift-container.open .secret-message {
+            opacity: 1;
+            transform: translate(-50%, -180%);
+            pointer-events: all;
+        }
+
+        /* Balloons */
+        .balloon {
+            position: absolute;
+            bottom: -100px;
+            width: 40px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0.7;
+            animation: float Up 6s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0); }
+            100% { transform: translateY(-120vh) rotate(20deg); }
+        }
+
+        @media (max-width: 600px) {
+            .main-title { font-size: 2.5rem; }
+            .name-highlight { font-size: 3.5rem; }
+        }
+    </style>
+</head>
 <body>
 
-<h1>Solve the Puzzle 🎁</h1>
-<p>What was the first word you said to me? </p>
+    <!-- Verification Section -->
+    <div id="login-screen">
+        <h1>Identity Check 🔐</h1>
+        <p style="margin-bottom: 20px; opacity: 0.8;">Enter your birth year to unlock your surprise.</p>
+        <div class="input-group">
+            <input type="number" id="answer" placeholder="YYYY" maxlength="4">
+        </div>
+        <button onclick="unlock()">ACCESS DATA</button>
+        <p id="error-msg"></p>
+    </div>
 
-<input id="answer" placeholder="Enter answer">
-<button onclick="check()">Submit</button>
+    <!-- The Celebration Section -->
+    <div id="celebration-screen">
+        <canvas id="confetti-canvas"></canvas>
+        
+        <div class="birthday-content">
+            <h2 class="main-title">Happy Birthday</h2>
+            <span class="name-highlight">ANTISHA!</span>
+            <p style="font-size: 1.2rem; opacity: 0.9; margin-top: 10px;">You are officially the coolest 2001-born person today.</p>
 
-<p id="result"></p>
+            <div class="gift-container" id="gift" onclick="openGift()">
+                <div class="secret-message">
+                    <h3 style="color: var(--primary); margin-bottom: 8px;">✨ Special Note ✨</h3>
+                    <p>Antisha, you make the world brighter! Hope your day is as amazing as you are. Enjoy your special day! 🎂💖</p>
+                </div>
+                <div class="gift-lid"></div>
+                <div class="gift-box"></div>
+                <p style="margin-top: 15px; color: gold; font-weight: bold;">Tap the gift!</p>
+            </div>
+        </div>
+    </div>
 
-<script>
+    <script>
+        const loginScreen = document.getElementById('login-screen');
+        const celebrationScreen = document.getElementById('celebration-screen');
+        const errorMsg = document.getElementById('error-msg');
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
 
-function check(){
+        // Handle Enter key
+        document.getElementById('answer').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') unlock();
+        });
 
-let ans=document.getElementById("answer").value;
+        function unlock() {
+            const val = document.getElementById('answer').value;
+            
+            if(val === "2001") {
+                // Transition
+                loginScreen.style.opacity = "0";
+                loginScreen.style.transform = "scale(0.9)";
+                
+                setTimeout(() => {
+                    loginScreen.style.display = "none";
+                    celebrationScreen.style.display = "flex";
+                    initConfetti();
+                    createBalloons();
+                }, 800);
+            } else {
+                errorMsg.innerHTML = "Access Denied. Wrong birth year! 🕵️‍♀️";
+                document.getElementById('answer').style.borderColor = "#ff4b2b";
+                setTimeout(() => {
+                    errorMsg.innerHTML = "";
+                    document.getElementById('answer').style.borderColor = "rgba(255, 255, 255, 0.1)";
+                }, 2000);
+            }
+        }
 
-if(ans=="mindblowing"){
-document.body.innerHTML=
-"<h1>🎉 Happy Birthday My Friend 🎉</h1><p>You unlocked the secret page!</p>";
-}
-else{
-document.getElementById("result").innerHTML="Wrong answer 😜 Try again";
-}
+        function openGift() {
+            document.getElementById('gift').classList.add('open');
+            // Trigger more confetti on open
+            for(let i=0; i<50; i++) particles.push(new Particle());
+        }
 
-}
+        // --- Confetti Engine ---
+        let particles = [];
+        const particleCount = 100;
+        const colors = ['#ff477e', '#ff85a1', '#fbb1bd', '#fff', '#ffd700'];
 
-</script>
+        function initConfetti() {
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+            render();
+        }
 
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height - canvas.height;
+                this.size = Math.random() * 8 + 4;
+                this.speedY = Math.random() * 3 + 2;
+                this.speedX = (Math.random() - 0.5) * 2;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 5;
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                this.rotation += this.rotationSpeed;
+                if (this.y > canvas.height) this.reset();
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation * Math.PI / 180);
+                ctx.fillStyle = this.color;
+                ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
+                ctx.restore();
+            }
+        }
+
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(render);
+        }
+
+        // --- Balloons ---
+        function createBalloons() {
+            setInterval(() => {
+                const b = document.createElement('div');
+                b.className = 'balloon';
+                const size = Math.random() * 20 + 30;
+                b.style.width = size + 'px';
+                b.style.height = (size * 1.3) + 'px';
+                b.style.left = Math.random() * 100 + 'vw';
+                b.style.background = colors[Math.floor(Math.random() * colors.length)];
+                b.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                celebrationScreen.appendChild(b);
+                
+                // Cleanup
+                setTimeout(() => b.remove(), 7000);
+            }, 500);
+        }
+    </script>
 </body>
 </html>
